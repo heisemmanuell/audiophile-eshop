@@ -62,7 +62,7 @@ export default function CheckoutPage() {
           email: data.billing.email,
           name: data.billing.name,
           phone: data.billing.phone,
-          shipping: {
+          shippingAddress: {
             address: data.shipping.address,
             city: data.shipping.city,
             country: data.shipping.country,
@@ -75,7 +75,7 @@ export default function CheckoutPage() {
             quantity: item.quantity,
           })),
           subtotal,
-          shipping,
+          shippingCost: shipping,
           taxes,
           total,
           orderId,

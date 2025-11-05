@@ -26,6 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       shipping,
       // some clients may send shippingAddress instead of shipping
       shippingAddress,
+      shippingDetails,
       items = [],
       subtotal,
       // some clients may send shipping as a number (shipping) or shippingCost
@@ -38,7 +39,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       email: string;
       name?: string;
       phone?: string;
-      shipping?: { address?: string; city?: string; country?: string; zipCode?: string };
+      shippingDetails?: { address?: string; city?: string; country?: string; zipCode?: string };
       shippingAddress?: { address?: string; city?: string; country?: string; zipCode?: string };
       items?: LineItem[];
       subtotal?: number;
@@ -58,7 +59,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 }
 
     // Normalize shipping object and shipping cost field names
-    const shippingObj = shipping ?? shippingAddress ?? {};
+    const shippingObj = shippingDetails ?? shippingAddress ?? {};
     const shippingFee = typeof shippingCost === 'number' ? shippingCost : typeof shippingNumber === 'number' ? shippingNumber : 0;
 
     const itemsHtml = (items as LineItem[])
@@ -120,9 +121,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
               <h3>Shipping details</h3>
               <p>
-                ${escapeHtml((shipping?.address) || '')}<br />
-                ${escapeHtml((shipping?.city) || '')}${shipping?.zipCode ? `, ${escapeHtml(shipping.zipCode)}` : ''}<br />
-                ${escapeHtml((shipping?.country) || '')}
+                ${escapeHtml((shippingObj?.address) || '')}<br />
+                ${escapeHtml((shippingObj?.city) || '')}${shippingObj?.zipCode ? `, ${escapeHtml(shippingObj.zipCode)}` : ''}<br />
+                ${escapeHtml((shippingObj?.country) || '')}
               </p>
 
               <p>If you have questions, contact our support at <a href="mailto:support@audiophile.example">support@audiophile.example</a> or reply to this email.</p>

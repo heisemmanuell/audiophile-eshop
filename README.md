@@ -1,61 +1,107 @@
-# Frontend Mentor - Audiophile e-commerce website solution
+# Audiophile E-commerce
 
-This is a solution to the [Audiophile e-commerce website challenge on Frontend Mentor](https://www.frontendmentor.io/challenges/audiophile-ecommerce-website-C8cuSd_wx). Frontend Mentor challenges help you improve your coding skills by building realistic projects.
+A modern, responsive e-commerce website for high-end audio equipment, built with Next.js, TypeScript, and Convex. Features a seamless shopping experience with product browsing, cart management, secure checkout, and transactional email confirmations.
 
-## Table of contents
+## Features
 
-- [Overview](#overview)
-  - [The challenge](#the-challenge)
-  - [Screenshot](#screenshot)
-  - [Links](#links)
-- [My process](#my-process)
-  - [Built with](#built-with)
-- [Author](#author)
+- **Product Catalog**: Browse headphones, speakers, and earphones with detailed product pages
+- **Shopping Cart**: Add/remove items, update quantities, persistent cart state
+- **Secure Checkout**: Form validation, payment processing, order confirmation
+- **Order Management**: Track orders with Convex database integration
+- **Email Notifications**: Automated confirmation emails with Resend
+- **Responsive Design**: Optimized for desktop, tablet, and mobile devices
 
-## Overview
 
-### The challenge
+## Tech Stack
 
-Users should be able to:
+- **Frontend**: Next.js, React, TypeScript
+- **Styling**: Tailwind CSS, PostCSS
+- **Backend**: Convex (serverless database and functions)
+- **Email Service**: Resend (transactional emails)
+- **Form Handling**: React Hook Form with Zod validation
+- **State Management**: React Context (cart)
 
-- View the optimal layout for the app depending on their device's screen size
-- See hover states for all interactive elements on the page
-- Add/Remove products from the cart
-- Edit product quantities in the cart
-- Fill in all fields in the checkout
-- Receive form validations if fields are missed or incorrect during checkout
-- See correct checkout totals depending on the products in the cart
-  - Shipping always adds $50 to the order
-  - VAT is calculated as 20% of the product total, excluding shipping
-- See an order confirmation modal after checking out with an order summary
-- **Bonus**: Keep track of what's in the cart, even after refreshing the browser (`localStorage` could be used for this if you're not building out a full-stack app)
+## Prerequisites
 
-### Screenshot
+- Node.js 18+
+- npm or yarn
+- Convex account
+- Resend account
 
-![](./screenshot.png)
+## Installation
 
-### Links
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/heisemmanuell/audiophile-eshop.git
+   cd audiophile-eshop
+   ```
 
-- Solution URL: [https://www.frontendmentor.io/solutions/audiophile-ecommerce-react-nextjs-local-storage-currently-R_80_swwrg](https://www.frontendmentor.io/solutions/audiophile-ecommerce-react-nextjs-local-storage-currently-R_80_swwrg)
-- Live Site URL: [https://fem-audiophile-ecommerce.vercel.app/](https://fem-audiophile-ecommerce.vercel.app/)
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-## My process
+3. **Environment Setup**
+   Create a `.env.local` file in the root directory:
+   ```env
+   # Convex
+   NEXT_PUBLIC_CONVEX_URL=your_convex_url
 
-### Built with
+   # Resend
+   RESEND_API_KEY=your_resend_api_key
 
-- Semantic HTML5 markup
-- Flexbox
-- Grid
-- Mobile-first workflow
-- LocalStorage for cart (may be replaced with a CMS or a database in the future)
-- [React](https://reactjs.org/) - JS library
-- [Next.js](https://nextjs.org/) - React framework
-- [TailwindCSS](https://tailwindcss.com/) - For styling
-- [zod](https://zod.dev/) - For form validation
-- [react-hook-form](https://react-hook-form.com/) - For form handling
+   # Email Configuration
+   FROM_EMAIL=noreply@yourdomain.com
+   ```
 
-## Author
+4. **Convex Setup**
+   ```bash
+   npx convex dev --once
+   ```
 
-- Website - [Lucas Winkler](https://www.lucaswinkler.dev)
-- Frontend Mentor - [@lucaswinkler](https://www.frontendmentor.io/profile/lucaswinkler)
-- Twitter - [@lucasjwinkler](https://www.twitter.com/lucasjwinkler)
+5. **Run the development server**
+   ```bash
+   npm run dev
+   ```
+
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+
+## Deployment on vercel
+
+1. **Connect Repository**
+   - Link your GitHub repository to Render
+   - Set build command: `npm run build`
+   - Set start command: `npm start`
+
+2. **Environment Variables**
+   Add the following environment variables in Render dashboard:
+   ```
+   NEXT_PUBLIC_CONVEX_URL
+   RESEND_API_KEY
+   FROM_EMAIL
+   ```
+
+3. **Convex Deployment**
+   ```bash
+   npx convex deploy
+   ```
+
+4. **Database Setup**
+   Ensure your Convex database is properly configured and deployed.
+
+## Email Configuration
+
+The app uses Resend for sending transactional emails. 
+
+Key email features:
+- Order confirmation with customer details
+- Order summary and shipping information
+- Support contact information
+- Responsive HTML templates

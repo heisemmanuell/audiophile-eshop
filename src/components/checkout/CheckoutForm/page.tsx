@@ -8,7 +8,7 @@ import { CheckoutFormData } from './schema'
 
 export default function CheckoutPage() {
   const router = useRouter()
-  const createOrder = useMutation(api.orders.createOrder) // 👈 your Convex function
+  const createOrder = useMutation(api.orders.createOrder) 
 
   // Called when the form is submitted
   const handleSubmit = async (data: CheckoutFormData) => {
@@ -58,33 +58,37 @@ export default function CheckoutPage() {
 
       // Send confirmation email (best-effort; do not block the checkout flow)
       try {
+        const payload = {
+          email: data.billing.email,
+          name: data.billing.name,
+          phone: data.billing.phone,
+          shipping: {
+            address: data.shipping.address,
+            city: data.shipping.city,
+            country: data.shipping.country,
+            zipCode: data.shipping.zipCode,
+          },
+          items: cart.map((item: any) => ({
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+          })),
+          subtotal,
+          shipping,
+          taxes,
+          total,
+          orderId,
+        }
+
+        console.log('Sending confirmation email payload:', payload)
+
         const emailResponse = await fetch('/api/send-email', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            email: data.billing.email,
-            name: data.billing.name,
-            phone: data.billing.phone,
-            shippingAddress: {
-              address: data.shipping.address,
-              city: data.shipping.city,
-              country: data.shipping.country,
-              zipCode: data.shipping.zipCode,
-            },
-            items: cart.map((item: any) => ({
-              id: item.id,
-              name: item.name,
-              price: item.price,
-              quantity: item.quantity,
-            })),
-            subtotal,
-            shipping,
-            taxes,
-            total,
-            orderId,
-          }),
+          body: JSON.stringify(payload),
         })
 
         if (!emailResponse.ok) {

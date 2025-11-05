@@ -17,13 +17,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+    console.log('POST /api/send-email called with body:', req.body)
+
     const {
       email,
       name,
       phone,
       shipping,
+      // some clients may send shippingAddress instead of shipping
+      shippingAddress,
       items = [],
       subtotal,
+      // some clients may send shipping as a number (shipping) or shippingCost
+      shipping: shippingNumber,
       shippingCost,
       taxes,
       total,
@@ -33,16 +39,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       name?: string;
       phone?: string;
       shipping?: { address?: string; city?: string; country?: string; zipCode?: string };
+      shippingAddress?: { address?: string; city?: string; country?: string; zipCode?: string };
       items?: LineItem[];
       subtotal?: number;
       shippingCost?: number;
+      // shippingNumber is also allowed (from clients named `shipping`)
+      shipping?: number;
       taxes?: number;
       total?: number;
       orderId?: string;
     };
 
-    const fromAddress = process.env.EMAIL_FROM || 'onboarding@resend.dev';
+    const fromAddress = process.env.EMAIL_FROM?.trim() || 'onboarding@resend.dev';
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `http://localhost:3000`;
+
+    if (!fromAddress.endsWith('@audiophileshop.order.com') && process.env.NODE_ENV !== 'production') {
+  console.warn('⚠️ Using fallback from address (testing mode)');
+}
+
+    // Normalize shipping object and shipping cost field names
+    const shippingObj = shipping ?? shippingAddress ?? {};
+    const shippingFee = typeof shippingCost === 'number' ? shippingCost : typeof shippingNumber === 'number' ? shippingNumber : 0;
 
     const itemsHtml = (items as LineItem[])
       .map(
@@ -128,6 +145,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       html,
     });
 
+    console.log('📩 Resend send() response:', JSON.stringify(result, null, 2));
     console.log('Resend result:', result);
     return res.status(200).json({ success: true, result });
   } catch (err) {

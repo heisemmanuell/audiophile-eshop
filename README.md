@@ -8,7 +8,7 @@ A modern, responsive e-commerce website for high-end audio equipment, built with
 - **Shopping Cart**: Add/remove items, update quantities, persistent cart state
 - **Secure Checkout**: Form validation, payment processing, order confirmation
 - **Order Management**: Track orders with Convex database integration
-- **Email Notifications**: Automated confirmation emails with Resend
+- **Email Notifications**: Automated confirmation emails with Nodemailer
 - **Responsive Design**: Optimized for desktop, tablet, and mobile devices
 
 
@@ -17,7 +17,7 @@ A modern, responsive e-commerce website for high-end audio equipment, built with
 - **Frontend**: Next.js, React, TypeScript
 - **Styling**: Tailwind CSS, PostCSS
 - **Backend**: Convex (serverless database and functions)
-- **Email Service**: Resend (transactional emails)
+- **Email Service**: Nodemailer (transactional emails)
 - **Form Handling**: React Hook Form with Zod validation
 - **State Management**: React Context (cart)
 
@@ -26,7 +26,7 @@ A modern, responsive e-commerce website for high-end audio equipment, built with
 - Node.js 18+
 - npm or yarn
 - Convex account
-- Resend account
+- Nodemailer
 
 ## Installation
 
@@ -47,11 +47,11 @@ A modern, responsive e-commerce website for high-end audio equipment, built with
    # Convex
    NEXT_PUBLIC_CONVEX_URL=your_convex_url
 
-   # Resend
-   RESEND_API_KEY=your_resend_api_key
-
-   # Email Configuration
-   FROM_EMAIL=noreply@yourdomain.com
+   #Set nodemailer 
+   SMTP_USER=youremailaddress.com
+   SMTP_PASSWORD=yourapppassword
+   SMTP_FROM_NAME=Audiophile
+   USE_ETHEREAL=false(for production)
    ```
 
 4. **Convex Setup**
@@ -76,7 +76,7 @@ A modern, responsive e-commerce website for high-end audio equipment, built with
 ## Deployment on vercel
 
 1. **Connect Repository**
-   - Link your GitHub repository to Render
+   - Link your GitHub repository to vercel
    - Set build command: `npm run build`
    - Set start command: `npm start`
 
@@ -84,8 +84,10 @@ A modern, responsive e-commerce website for high-end audio equipment, built with
    Add the following environment variables in Render dashboard:
    ```
    NEXT_PUBLIC_CONVEX_URL
-   RESEND_API_KEY
-   FROM_EMAIL
+   SMTP_USER
+   SMTP_PASSWORD
+   SMTP_FROM_NAME
+   USE_ETHEREAL
    ```
 
 3. **Convex Deployment**
@@ -98,7 +100,7 @@ A modern, responsive e-commerce website for high-end audio equipment, built with
 
 ## Email Configuration
 
-The app uses Resend for sending transactional emails. 
+The app uses Nodemailer for sending transactional emails. Emails are sent within approximately 2 minutes of order placement.
 
 Key email features:
 - Order confirmation with customer details

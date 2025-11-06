@@ -111,6 +111,11 @@ export default function Product({
 
     localStorage.setItem("cart", JSON.stringify(updatedCart));
     setProductQuantity(1);
+    try {
+      window.dispatchEvent(new Event('cart:updated'));
+    } catch (e) {
+      /* ignore */
+    }
   };
 
   const handleChangeQuantity = (value: number) => {

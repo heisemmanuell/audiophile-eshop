@@ -78,13 +78,13 @@ export async function sendOrderConfirmationEmail(params: SendEmailParams) {
       const productName = `${item.name} x${item.quantity}`;
       const dashes = "-".repeat(Math.max(1, 60 - productName.length - itemTotal.toLocaleString().length - 3));
       return `
-                    <tr class="invoice-row">
-                      <td class="invoice-item">${productName}</td>
-                      <td class="invoice-dashes">${dashes}</td>
-                      <td class="invoice-price">$${itemTotal.toLocaleString()}</td>
-                    </tr>
-                    ${index < items.length - 1 ? '<tr><td colspan="3" class="invoice-divider">-</td></tr>' : ''}
-                  `;
+          <tr class="invoice-row">
+            <td class="invoice-item">${productName}</td>
+            <td class="invoice-dashes">${item.quantity}</td>
+            <td class="invoice-price">$${itemTotal.toLocaleString()}</td>
+          </tr>
+          ${index < items.length - 1 ? '<tr><td colspan="3" class="invoice-divider">-</td></tr>' : ''}
+        `;
     })
     .join("");
 
@@ -263,14 +263,14 @@ export async function sendOrderConfirmationEmail(params: SendEmailParams) {
           </tr>
         </thead>
         <tbody>
-${itemsListHtml}
+          ${itemsListHtml}
         </tbody>
       </table>
 
       <div class="totals">
-        <div class="totals-row"><span>Subtotal</span><span>$${totals.subtotal.toLocaleString()}</span></div>
-        <div class="totals-row"><span>Shipping</span><span>$${totals.shipping.toLocaleString()}</span></div>
-        <div class="totals-row"><span>Tax</span><span>$${totals.taxes.toFixed(2)}</span></div>
+        <div class="totals-row"><span>Subtotal:  </span><span>$${totals.subtotal.toLocaleString()}</span></div>
+        <div class="totals-row"><span>Shipping:  </span><span>$${totals.shipping.toLocaleString()}</span></div>
+        <div class="totals-row"><span>Tax:  </span><span>$${totals.taxes.toFixed(2)}</span></div>
         <div class="grand-total">Total: $${totals.grandTotal.toLocaleString()}</div>
       </div>
 
@@ -292,34 +292,31 @@ ${itemsListHtml}
 
   // Plain text version
   const emailText = `
-Hello ${customer.name}! 👋
+    Hello ${customer.name}! 👋
 
-🎉 Your Order is Confirmed!
+    🎉 Your Order is Confirmed!
 
-Order #${orderId || "N/A"}
+    Order #${orderId || "N/A"}
 
-📦 Order Details:
+    📦 Order Details:
 
-📍 Shipping Address:
-${customer.name}
-${shipping?.address || "N/A"}
-${shipping?.city || "N/A"}, ${shipping?.country || "N/A"} ${shipping?.zip || "N/A"}
+    📍 Shipping Address:
+    ${customer.name}
+    ${shipping?.address || "N/A"}
+    ${shipping?.city || "N/A"}, ${shipping?.country || "N/A"} ${shipping?.zip || "N/A"}
 
-🛍️ Items You Snagged:
-${itemsList}
+    🛍️ Items You Got:
+    ${itemsList}
 
-💰 Payment Summary:
-Subtotal: $${totals.subtotal.toLocaleString()}
-Shipping: $${totals.shipping.toLocaleString()}
-Tax: $${totals.taxes.toFixed(2)}
-Grand Total: $${totals.grandTotal.toLocaleString()}
+    💰 Payment Summary:
+    Subtotal: $${totals.subtotal.toLocaleString()}
+    Shipping: $${totals.shipping.toLocaleString()}
+    Tax: $${totals.taxes.toFixed(2)}
+    Grand Total: $${totals.grandTotal.toLocaleString()}
 
-💬 Have questions? We're here for you!
-📧 support@audiophile.com
+    View Your Order: ${process.env.NEXT_PUBLIC_APP_URL || 'https://audiophile.com'}/orders/${orderId}
 
-View Your Order: ${process.env.NEXT_PUBLIC_APP_URL || 'https://audiophile.com'}/orders/${orderId}
-
-You'll receive another email when your order ships! 🚚
+    You'll receive another email when your order ships! 🚚
   `;
 
   // Send email from your Gmail account

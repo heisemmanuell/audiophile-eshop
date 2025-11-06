@@ -58,12 +58,23 @@ export default function Checkout() {
     setOrderData(data);
     setIsConfirmationOpen(true);
     localStorage.removeItem("cart");
+    try {
+      // notify other listeners (cart button) that cart was cleared during checkout
+      if (typeof window !== 'undefined') window.dispatchEvent(new Event('cart:updated'));
+    } catch (e) {
+      /* ignore */
+    }
   };
 
   const handleConfirmationClose = () => {
     setCart([]);
     setIsConfirmationOpen(false);
     router.push("/");
+    try {
+      if (typeof window !== 'undefined') window.dispatchEvent(new Event('cart:updated'));
+    } catch (e) {
+      /* ignore */
+    }
   };
 
   const calculateVatAmount = () => {

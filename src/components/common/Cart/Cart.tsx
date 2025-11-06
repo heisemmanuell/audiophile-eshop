@@ -35,6 +35,11 @@ export default function Cart({
   const handleRemoveAllFromCart = () => {
     setCart([]);
     localStorage.removeItem("cart");
+    try {
+      window.dispatchEvent(new Event('cart:updated'));
+    } catch (e) {
+      /* ignore */
+    }
   };
 
   const handleAdjustCartItemQuantity = (id: number, quantity: number) => {
@@ -98,6 +103,12 @@ export default function Cart({
   useEffect(() => {
     if (typeof window !== "undefined" && cart.length > 0) {
       localStorage.setItem("cart", JSON.stringify(cart));
+      // Notify other listeners (cart button, header) that cart changed
+      try {
+        window.dispatchEvent(new Event('cart:updated'));
+      } catch (e) {
+        /* ignore */
+      }
     }
 
     const calculateCartTotal = () => {

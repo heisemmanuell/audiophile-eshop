@@ -1,11 +1,20 @@
-import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
+import nodemailer from 'nodemailer'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+// Create Gmail transporter
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASSWORD,
+  },
+})
 
 export async function POST(req: Request) {
   try {
-    const { email, total, orderId } = await req.json()
+    const { email, name, total, orderId, items, shipping } = await req.json()
 
     console.log('Sending email to:', email, 'for order:', orderId)
 
@@ -47,8 +56,9 @@ export async function POST(req: Request) {
       </html>
     `
 
-    const result = await resend.emails.send({
-      from: 'onboarding@resend.dev',
+    // Send email using nodemailer
+    const result = await transporter.sendMail({
+      from: `"${process.env.SMTP_FROM_NAME}" <${process.env.SMTP_USER}>`,
       to: email,
       subject: 'Order Confirmation - Audiophile',
       html,

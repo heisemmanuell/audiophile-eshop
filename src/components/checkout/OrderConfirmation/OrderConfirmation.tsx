@@ -13,11 +13,69 @@ interface OrderConfirmationProps {
   onClose: () => void
 }
 
-export function OrderConfirmation({ cart, grandTotal, onClose }: OrderConfirmationProps) {
+export function OrderConfirmation({ orderData, cart, grandTotal, onClose }: OrderConfirmationProps) {
   const firstItem = cart[0]
   const otherItemsCount = cart.length - 1
 
   useEffect(() => {
+    // Send confirmation email
+    const sendConfirmationEmail = async () => {
+      if (!orderData) {
+        console.error('No order data available');
+        return;
+      }
+
+      try {
+        const orderId = Math.random().toString(36).substr(2, 9).toUpperCase(); // Generate random order ID
+        const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        const shippingCost = 50;
+        const taxes = Math.round(grandTotal * 0.2);
+
+        // Format the items array to match the API expectations
+        const formattedItems = cart.map(item => ({
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity
+        }));
+
+        const payload = {
+          email: orderData.billing.email,
+          name: orderData.billing.name,
+          phone: orderData.billing.phone,
+          shipping: {
+            address: orderData.shipping.address,
+            city: orderData.shipping.city,
+            country: orderData.shipping.country,
+            zip: orderData.shipping.zipCode
+          },
+          items: formattedItems,
+          subtotal: subtotal,
+          shippingCost: shippingCost,
+          taxes: taxes,
+          total: grandTotal,
+          orderId: orderId
+        };
+
+        console.log('Sending confirmation email payload:', payload);
+
+        const response = await fetch('/api/send-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+
+        const result = await response.json();
+        console.log('Email API responded:', result);
+      } catch (error) {
+        console.error('Failed to send confirmation email:', error);
+      }
+    };
+
+    sendConfirmationEmail();
+
+    // Handle modal scroll locking
     const html = document.querySelector("html")
 
     if (html) {
@@ -40,7 +98,7 @@ export function OrderConfirmation({ cart, grandTotal, onClose }: OrderConfirmati
         })
       }
     }
-  }, [])
+  }, [cart, grandTotal, orderData])
 
   return (
     <>

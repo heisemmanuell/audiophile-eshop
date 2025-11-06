@@ -39,7 +39,20 @@ export function CheckoutForm({ onSubmit, onPaymentMethodChange }: CheckoutFormPr
         Checkout
       </h1>
 
-      <form id="checkout-form" onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+      <form
+        id="checkout-form"
+        onSubmit={handleSubmit(
+          (data) => {
+            // Log for debugging so we can confirm the form submission fires
+            console.log('CheckoutForm submit:', data)
+            onSubmit(data)
+          },
+          (formErrors) => {
+            console.warn('CheckoutForm validation errors:', formErrors)
+          }
+        )}
+        className="space-y-8"
+      >
         <section>
           <h2 className="text-xs font-bold uppercase text-orange">Billing Details</h2>
           <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">

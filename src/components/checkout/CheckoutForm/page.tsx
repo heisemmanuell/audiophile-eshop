@@ -56,6 +56,8 @@ export default function CheckoutPage() {
         total,
       })
 
+  console.log('Order created with id:', orderId)
+
       // Send confirmation email (best-effort; do not block the checkout flow)
       try {
         const payload = {
@@ -91,11 +93,21 @@ export default function CheckoutPage() {
           body: JSON.stringify(payload),
         })
 
+        let respBody = null
+        try {
+          respBody = await emailResponse.json()
+        } catch (e) {
+          console.warn('Failed to parse email response JSON', e)
+        }
+
         if (!emailResponse.ok) {
-          const errorData = await emailResponse.json()
-          console.error('Email sending failed:', errorData)
+          console.error('Email sending failed:', emailResponse.status, respBody)
         } else {
-          console.log('Email sent successfully')
+          console.log('Email API responded OK:', respBody)
+          const url = respBody?.result?.previewUrl || respBody?.previewUrl || respBody?.result?.previewUrl
+          if (url) {
+            console.log('Email preview URL:', url)
+          }
         }
       } catch (emailError) {
         console.error('Email sending failed:', emailError)
